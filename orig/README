@@ -1,5 +1,23 @@
-(seq 1 22; echo X) | \
-xargs printf "http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/chr%s_mq25_mapab100.vcf.gz\n" |\
-xargs -n 1 wget
+# Download data files
+(seq 22; echo X) | xargs printf \
+"http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/chr%s_mq25_mapab100.vcf.gz\n" \
+| xargs -n 1 wget
 
+# Download checksum file
 wget "http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/md5sums.txt"
+
+# Check checksums. All checksums are fine.
+md5sum -c md5sums.txt 
+
+# Filter data files
+(seq 1 22; echo X) | xargs -P 15 -n 1 bash filter.sh
+
+# Index data files
+ls *filtered.vcf.bgz | xargs -P 15 -n 1 tabix -p vcf
+
+# Make list of autosome data files
+seq 22 | sort | xargs -n 1 printf "vindija-chr%s-filtered.vcf.bgz\n" > autosomes
+
+# Concatenate autosomes
+bcftools concat --file-list autosomes --output-type b --output vindija-autosomes.bcf
+
