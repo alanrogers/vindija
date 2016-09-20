@@ -21,3 +21,14 @@ seq 22 | sort | xargs -n 1 printf "vindija-chr%s-filtered.vcf.bgz\n" > autosomes
 # Concatenate autosomes
 bcftools concat --file-list autosomes --output-type b --output vindija-autosomes.bcf
 
+# Generate data for analysis. Output looks like
+# 22,20006558,G,G/G
+# 22,20006574,G,A/A
+# 22,20006992,A,C/C
+# Columns are chr, pos, ref, alt, ancestral_allele, genotypes...
+bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/CAnc[\t%GT]\n' vindija-autosomes.bcf | daf > vindija.daf
+
+# The above fails because I don't have ancestral allele (CAnc) annotation.
+
+# Refs on ancestral alleles
+ftp://ftp.ncbi.nih.gov/snp/database/organism_data/human_9606/SNPAncestralAllele.bcp.gz
