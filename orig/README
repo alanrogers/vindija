@@ -32,3 +32,5 @@ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/CAnc[\t%GT]\n' vindija-autoso
 
 # Refs on ancestral alleles
 ftp://ftp.ncbi.nih.gov/snp/database/organism_data/human_9606/SNPAncestralAllele.bcp.gz
+
+ftp://ftp.ensembl.org/pub/release-85/fasta/ancestral_alleles/homo_sapiens.tar.gz
