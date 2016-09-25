@@ -22,6 +22,7 @@ ls *filtered.vcf.bgz | xargs -P 15 -n 1 tabix -p vcf
 seq 22 | sort | xargs -n 1 printf "vindija-chr%s-filtered.vcf.bgz\n" > autosomes
 
 # Add ancestral (AA) annotations
+(seq 22; echo X) | xargs -P 15 -n 1 bash ancall.sh
 
 # Concatenate autosomes
 bcftools concat --file-list autosomes --output-type b --output vindija-autosomes.bcf
