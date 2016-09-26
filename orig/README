@@ -16,25 +16,19 @@ md5sum -c md5sums.txt
 seq 22 | xargs -P 15 -n 1 bash ancall.sh
 
 # Index data files
-ls *filtered.vcf.bgz | xargs -P 15 -n 1 tabix -p vcf
-
-# Make list of autosome data files
-seq 22 | sort | xargs -n 1 printf "vindija-chr%s-filtered.vcf.bgz\n" > autosomes
+ls *-aa.bcf | xargs -P 15 -n 1 tabix
 
 # Add ancestral (AA) annotations
 (seq 22; echo X) | xargs -P 15 -n 1 bash ancall.sh
-
-# Concatenate autosomes
-bcftools concat --file-list autosomes --output-type b --output vindija-autosomes.bcf
 
 # Generate data for analysis. Output looks like
 # 22,20006558,G,G/G
 # 22,20006574,G,A/A
 # 22,20006992,A,C/C
 # Columns are chr, pos, ref, alt, ancestral_allele, genotypes...
-bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/CAnc[\t%GT]\n' vindija-autosomes.bcf | daf > vindija.daf
-
-# The above fails because I don't have ancestral allele (CAnc) annotation.
+seq 22 | sort | xargs -n 1 printf "vindija-chr%s-aa.bcf\n" | \
+xargs -n 1 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/AA[\t%GT]\n' | \
+daf > vindija.daf
 
 # Refs on ancestral alleles
 ftp://ftp.ncbi.nih.gov/snp/database/organism_data/human_9606/SNPAncestralAllele.bcp.gz
