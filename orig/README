@@ -12,27 +12,19 @@ md5sum -c md5sums.txt
 # Filter data files
 (seq 22; echo X) | xargs -P 15 -n 1 bash filter.sh
 
-# Add ancestral allele annotation
-seq 22 | xargs -P 15 -n 1 bash ancall.sh
+# Add ancestral (AA) annotations
+(seq 22; echo X) | xargs -P 15 -n 1 bash ancall.sh
 
 # Index data files
 ls *-aa.bcf | xargs -P 15 -n 1 tabix
 
-# Add ancestral (AA) annotations
-(seq 22; echo X) | xargs -P 15 -n 1 bash ancall.sh
-
-# Generate data for analysis. Output looks like
-# 22,20006558,G,G/G
-# 22,20006574,G,A/A
-# 22,20006992,A,C/C
-# Columns are chr, pos, ref, alt, ancestral_allele, genotypes...
+# Generate .daf file.
 seq 22 | sort | xargs -n 1 printf "vindija-chr%s-aa.bcf\n" | \
 xargs -n 1 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/AA[\t%GT]\n' | \
 daf > vindija.daf
 
 # Refs on ancestral alleles
 ftp://ftp.ncbi.nih.gov/snp/database/organism_data/human_9606/SNPAncestralAllele.bcp.gz
-ftp://ftp.ensembl.org/pub/release-85/fasta/ancestral_alleles/homo_sapiens.tar.gz
 
 
 
