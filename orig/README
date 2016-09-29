@@ -18,8 +18,16 @@ md5sum -c md5sums.txt
 # Index data files
 ls *-aa.bcf | xargs -P 15 -n 1 tabix
 
+# Add ALT field
+(seq 22; echo X) | xargs -P 10 -n 1 -I @ \
+  bcftools merge --merge snps -O b --output vindija-chr@-aa-alt.bcf \
+  vindija-chr@-aa.bcf ~/data/bohlseq/nosamples/nosamples-@.bcf
+  
+# Index data files with alt
+ls *-aa-alt.bcf | xargs -P 15 -n 1 tabix
+
 # Generate .daf file.
-seq 22 | sort | xargs -n 1 printf "vindija-chr%s-aa.bcf\n" | \
+seq 22 | sort | xargs -n 1 printf "vindija-chr%s-aa-alt.bcf\n" | \
 xargs -n 1 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/AA[\t%GT]\n' | \
 daf > vindija.daf
 
