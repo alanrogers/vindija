@@ -22,14 +22,25 @@ ls *-aa.bcf | xargs -P 15 -n 1 tabix
 (seq 22; echo X) | xargs -P 10 -n 1 -I @ \
   bcftools merge --merge all -O b --output vindija-chr@-aa-alt.bcf \
   vindija-chr@-aa.bcf ~/data/bohlseq/nosamples/nosamples-@.bcf
+
+# Check files with ALT
+join -j 1 \
+  <(bcftools query -f '%POS %REF %ALT\n' vindija-chr22-aa-alt.bcf) \
+  <(bcftools query -f '%POS %REF %ALT\n' ~/data/bohlseq/nosamples/nosamples-22.bcf) \
+  | wc -l
+276715
+
+bcftools query -f '%POS %REF %ALT\n' vindija-chr22-aa-alt.bcf | wc -l
+19653472
+
+bcftools query -f '%POS %REF %ALT\n' ~/data/bohlseq/nosamples/nosamples-22.bcf | wc -l
+276715
+
+Every line in nosamples-22 has a matching line in vindija-chr22-aa-alt, and all of these
+seem to have the ALT allele defined. All the ones I saw matched. 
   
 # Index data files with alt
 ls *-aa-alt.bcf | xargs -P 15 -n 1 tabix
-
-# Trying to deal with
-bcftools norm --multiallelics +both --output foo.bcf -O b vindija-chr22-aa-alt.bc
-
-
 
 # Generate .daf file.
 seq 22 | sort | xargs -n 1 printf "vindija-chr%s-aa-alt.bcf\n" | \
