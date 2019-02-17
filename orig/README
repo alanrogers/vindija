@@ -1,4 +1,4 @@
-# Download data files
+# Download data files, producing chr1_mq25_mapab100.vcf.gz, etc
 (seq 22; echo X) | xargs printf \
 "http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/chr%s_mq25_mapab100.vcf.gz\n" \
 | xargs -n 1 wget
@@ -7,45 +7,15 @@
 wget "http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/md5sums.txt"
 
 # Check checksums. All checksums are fine.
-md5sum -c md5sums.txt 
+md5sum -c md5sums.txt
 
-# Filter data files
+# Filter data files, producing vindija-chr1-filtered.vcf.bgz, etc
 (seq 22; echo X) | xargs -P 15 -n 1 bash filter.sh
 
-# Add ancestral (AA) annotations
-(seq 22; echo X) | xargs -P 15 -n 1 bash ancall.sh
-
-# Index data files
-ls *-aa.bcf | xargs -P 15 -n 1 tabix
-
-# Add ALT field
-(seq 22; echo X) | xargs -P 10 -n 1 -I @ \
-  bcftools merge --merge all -O b --output vindija-chr@-aa-alt.bcf \
-  vindija-chr@-aa.bcf ~/data/bohlseq/nosamples/nosamples-@.bcf
-
-# Check files with ALT
-join -j 1 \
-  <(bcftools query -f '%POS %REF %ALT\n' vindija-chr22-aa-alt.bcf) \
-  <(bcftools query -f '%POS %REF %ALT\n' ~/data/bohlseq/nosamples/nosamples-22.bcf) \
-  | wc -l
-276715
-
-bcftools query -f '%POS %REF %ALT\n' vindija-chr22-aa-alt.bcf | wc -l
-19653472
-
-bcftools query -f '%POS %REF %ALT\n' ~/data/bohlseq/nosamples/nosamples-22.bcf | wc -l
-276715
-
-Every line in nosamples-22 has a matching line in vindija-chr22-aa-alt, and all of these
-seem to have the ALT allele defined. All the ones I saw matched. 
-  
-# Index data files with alt
-ls *-aa-alt.bcf | xargs -P 15 -n 1 tabix
-
-# Generate .daf file.
-seq 22 | sort | xargs -n 1 printf "vindija-chr%s-aa-alt.bcf\n" | \
-xargs -n 1 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT\t%INFO/AA[\t%GT]\n' | \
-daf > vindija.daf
+# Generate vindija.raf
+seq 22 | sort | xargs -n 1 printf "vindija-chr%s-filtered.vcf.bgz\n" | \
+xargs -n 1 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' | \
+raf > vindija.raf
 
 # Refs on ancestral alleles
 ftp://ftp.ncbi.nih.gov/snp/database/organism_data/human_9606/SNPAncestralAllele.bcp.gz
