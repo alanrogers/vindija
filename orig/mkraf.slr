@@ -8,14 +8,14 @@
 #SBATCH -o vindija.raf.gz
 #SBATCH -e mkraf.err
 
-vfmt="chr%s_mq25_mapab100.vcf.gz\n"
+vfmt="chr%d_mq25_mapab100.vcf.gz\n"
 bfmt="../bed/chr%d_mask.bed.gz\n"
 
 # ensure consistent sort
 export LC_ALL=C
 
 # concatenate vcf files
-seq 22 | sort | xargs printf ${vfmt} | xargs bcftools concat -Ou |
+seq 22 | sort | xargs printf ${vfmt} | xargs bcftools concat |
 
 # keep only sites listed in bed files
 bedtools intersect -header -sorted -a "stdin" \
