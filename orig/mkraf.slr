@@ -18,7 +18,7 @@ export LC_ALL=C
 seq 22 | sort | xargs printf ${vfmt} | xargs bcftools concat -Ou |
 
 # keep only sites listed in bed files
-bedtools intersect -header -sorted -a stdin \
+bedtools intersect -header -sorted -a "stdin" \
 -b <(seq 22 | sort | xargs printf ${bfmt} | xargs zcat) |
 
 # Vindija has an empty INFO field, so comment this out
