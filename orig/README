@@ -13,7 +13,7 @@ md5sum -c md5sums.txt
 (seq 22; echo X) | xargs -P 15 -n 1 bash filter.sh
 
 # Generate vindija.raf
-sbatch raf.slr
+sbatch mkraf.slr
 
 # Refs on ancestral alleles
 ftp://ftp.ncbi.nih.gov/snp/database/organism_data/human_9606/SNPAncestralAllele.bcp.gz
