@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH -J index
+#SBATCH --account=rogersa-kp
+#SBATCH --partition=rogersa-kp
+#SBATCH --time=36:00:00
+#SBATCH --nodes 1
+#SBATCH --ntasks 1
+#SBATCH -o vindija.raf.gz
+#SBATCH -e index.err
+
+vfmt="chr%d_mq25_mapab100.vcf.gz\n"
+
+# Index vcf files. Not doing chr 1, because I downloaded that from
+# Max Planck.
+seq 2 22 | xargs printf ${vfmt} | xargs -n 1 -P 5 tabix -p vcf
