@@ -9,8 +9,8 @@ wget "http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/md5sums.txt"
 # Check checksums. All checksums are fine.
 md5sum -c md5sums.txt
 
-# Filter data files, producing vindija-chr1-filtered.vcf.bgz, etc
-(seq 22; echo X) | xargs -P 15 -n 1 bash filter.sh
+# Index vcf files
+sbatch index.slr
 
 # Generate vindija.raf
 sbatch mkraf.slr
