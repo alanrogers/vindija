@@ -1,7 +1,6 @@
 # Download data files, producing chr1_mq25_mapab100.vcf.gz, etc
-(seq 22; echo X) | xargs printf \
-"http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/chr%s_mq25_mapab100.vcf.gz\n" \
-| xargs -n 1 wget
+fmt="http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/chr%s_mq25_mapab100.vcf.gz\n"
+(seq 22; echo X) | xargs printf $fmt | xargs -n 1 wget
 
 # Download checksum file
 wget "http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/md5sums.txt"
