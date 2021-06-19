@@ -1,5 +1,12 @@
 # vindija
-Files associated with high-res genome of Vindija Neanderthal
+Files associated with high-res genome of Vindija Neanderthal.
+
+## Directories
+
+bed: bed files distributed by Max Planck Leipzig for use in quality
+control
+
+orig: genomic data and corresponding .raf file for use with Legofit
 
 ## Dating
 
